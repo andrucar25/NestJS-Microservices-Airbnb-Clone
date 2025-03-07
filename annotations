@@ -1,0 +1,10 @@
+crear el proyecto de nest
+nest new <nombre del proyecto>
+
+crear una library (modulo reutilizable que encapsula logica comun para ser compartida entre aplicaciones en un monorepo)
+nest generate library <nombre de la library>
+ 
+ crear un microservicio:
+ nest g app <nombre del microservicio>
+ 
+ cambiar en nest-cli.json el root por default en todos los campos
