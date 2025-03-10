@@ -11,10 +11,10 @@ RUN npm install -g pnpm
 
 RUN pnpm install
 
-COPY apps/payments apps/payments
+COPY apps/notifications apps/notifications
 COPY libs libs
 
-RUN pnpm run build payments
+RUN pnpm run build notifications
 
 FROM node:alpine as production
 
@@ -32,4 +32,4 @@ RUN pnpm install --prod #to install only dependencies and not dev dependencies
 
 COPY --from=development /usr/src/app/dist ./dist
 
-CMD ["node", "dist/apps/payments/main"]
+CMD ["node", "dist/apps/notifications/main"]
