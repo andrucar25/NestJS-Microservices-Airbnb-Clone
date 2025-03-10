@@ -9,7 +9,7 @@ import { DatabaseModule } from 'default/common';
 import { ReservationsRepository } from './reservations.repository';
 import { ReservationDocument, ReservationSchema } from './models/reservation.schema';
 import { LoggerModule } from 'default/common/logger/logger.module';
-import { AUTH_SERVICE } from 'default/common/constants/services';
+import { AUTH_SERVICE, PAYMENTS_SERVICE } from 'default/common/constants/services';
 
 @Module({
   imports: [DatabaseModule, DatabaseModule.forFeature([
@@ -20,6 +20,10 @@ import { AUTH_SERVICE } from 'default/common/constants/services';
       validationSchema: Joi.object({
         MONGODB_URI: Joi.string().required(),
         PORT: Joi.number().required(),
+        AUTH_HOST: Joi.string().required(),
+        PAYMENTS_HOST: Joi.string().required(),
+        AUTH_PORT: Joi.number().required(),
+        PAYMENTS_PORT: Joi.number().required(),
       })
     }),
     ClientsModule.registerAsync([
@@ -33,7 +37,18 @@ import { AUTH_SERVICE } from 'default/common/constants/services';
           },
         }),
         inject: [ConfigService],
-      }
+      },
+      {
+        name: PAYMENTS_SERVICE,
+        useFactory: (configService: ConfigService) => ({
+          transport: Transport.TCP,
+          options: {
+            host: configService.get('PAYMENTS_HOST'),
+            port: configService.get('PAYMENTS_PORT'),
+          },
+        }),
+        inject: [ConfigService],
+      },
     ])
 ],
   controllers: [ReservationsController],
