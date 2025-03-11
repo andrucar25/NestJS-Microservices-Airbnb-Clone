@@ -24,10 +24,10 @@ import { NOTIFICATIONS_SERVICE } from 'default/common/constants/services';
       {
         name: NOTIFICATIONS_SERVICE,
         useFactory: (configService: ConfigService) => ({
-          transport: Transport.TCP,
+          transport: Transport.RMQ,
           options: {
-            host: configService.get('NOTIFICATIONS_HOST'),
-            port: configService.get('NOTIFICATIONS_PORT'),
+            urls: [configService.getOrThrow<string>('RABBITMQ_URI')],
+            queue: 'notifications'
           },
         }),
         inject: [ConfigService],

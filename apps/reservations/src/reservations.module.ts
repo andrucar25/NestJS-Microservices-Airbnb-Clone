@@ -30,10 +30,10 @@ import { AUTH_SERVICE, PAYMENTS_SERVICE } from 'default/common/constants/service
       {
         name: AUTH_SERVICE,
         useFactory: (configService: ConfigService) => ({
-          transport: Transport.TCP,
+          transport: Transport.RMQ,
           options: {
-            host: configService.get('AUTH_HOST'),
-            port: configService.get('AUTH_PORT'),
+            urls: [configService.getOrThrow<string>('RABBITMQ_URI')],
+            queue: 'auth'
           },
         }),
         inject: [ConfigService],
@@ -41,10 +41,10 @@ import { AUTH_SERVICE, PAYMENTS_SERVICE } from 'default/common/constants/service
       {
         name: PAYMENTS_SERVICE,
         useFactory: (configService: ConfigService) => ({
-          transport: Transport.TCP,
+          transport: Transport.RMQ,
           options: {
-            host: configService.get('PAYMENTS_HOST'),
-            port: configService.get('PAYMENTS_PORT'),
+            urls: [configService.getOrThrow<string>('RABBITMQ_URI')],
+            queue: 'payments'
           },
         }),
         inject: [ConfigService],
