@@ -10,10 +10,22 @@ import { ReservationsRepository } from './reservations.repository';
 import { ReservationDocument, ReservationSchema } from './models/reservation.schema';
 import { LoggerModule } from 'default/common/logger/logger.module';
 import { AUTH_SERVICE, PAYMENTS_SERVICE } from 'default/common/constants/services';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloFederationDriver, ApolloFederationDriverConfig } from '@nestjs/apollo';
+import { ReservationsResolver } from './reservations.resolver';
 
 @Module({
-  imports: [DatabaseModule, DatabaseModule.forFeature([
-    {name: ReservationDocument.name, schema: ReservationSchema}]),
+  imports: [
+    DatabaseModule, 
+    DatabaseModule.forFeature([
+      {name: ReservationDocument.name, schema: ReservationSchema}
+    ]),
+    GraphQLModule.forRoot<ApolloFederationDriverConfig>({
+      driver: ApolloFederationDriver,
+      autoSchemaFile: {
+        federation: 2
+      }
+    }),
     LoggerModule,
     ConfigModule.forRoot({
       isGlobal: true,
@@ -52,6 +64,6 @@ import { AUTH_SERVICE, PAYMENTS_SERVICE } from 'default/common/constants/service
     ])
 ],
   controllers: [ReservationsController],
-  providers: [ReservationsService, ReservationsRepository],
+  providers: [ReservationsService, ReservationsRepository, ReservationsResolver],
 })
 export class ReservationsModule {}

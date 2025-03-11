@@ -39,4 +39,8 @@ export class UsersService {
     return this.usersRepository.findOne(getUserDto);
   }
 
+  async findAll() {
+    return this.usersRepository.find({});
+  }
+
 }

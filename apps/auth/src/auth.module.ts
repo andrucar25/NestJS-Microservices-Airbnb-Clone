@@ -2,6 +2,8 @@ import * as Joi from 'joi';
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriverConfig, ApolloFederationDriver } from '@nestjs/apollo';
 
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -24,6 +26,12 @@ import { JwtStrategy } from './strategies/jwt.strategy';
             TCP_PORT: Joi.number().required(),
           })
         }) ,
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloFederationDriver,
+          autoSchemaFile: {
+            federation: 2,
+          },
+    }),
     JwtModule.registerAsync({
     useFactory: (configService: ConfigService) => ({
       secret: configService.get<string>('JWT_SECRET'),
