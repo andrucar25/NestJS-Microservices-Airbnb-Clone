@@ -31,5 +31,6 @@ RUN npm install -g pnpm
 RUN pnpm install --prod #to install only dependencies and not dev dependencies
 
 COPY --from=development /usr/src/app/dist ./dist
+COPY proto proto
 
 CMD ["node", "dist/apps/reservations/main"]

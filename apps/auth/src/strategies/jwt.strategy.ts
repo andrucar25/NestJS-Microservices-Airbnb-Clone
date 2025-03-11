@@ -13,21 +13,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     configService: ConfigService,
     private readonly usersService: UsersService,
   ) {
-
-    const jwtSecret = configService.get<string>('JWT_SECRET');
-
-    if (!jwtSecret) {
-      throw new Error('JWT_SECRET is not defined in environment variables');
-    }
-
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request: any) =>
           request?.cookies?.Authentication ||
-          // request?.Authentication ||
-          request?.headers.Authentication 
+          request?.Authentication ||
+          request?.headers?.Authentication,
       ]),
-      secretOrKey: jwtSecret,
+      secretOrKey: configService.get('JWT_SECRET'),
     });
   }
 

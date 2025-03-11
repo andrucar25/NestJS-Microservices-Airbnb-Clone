@@ -4,18 +4,19 @@ import { ConfigService } from '@nestjs/config';
 import { Logger } from 'nestjs-pino';
 
 import { PaymentsModule } from './payments.module';
+import { PAYMENTS_PACKAGE_NAME } from 'default/common';
+import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create(PaymentsModule);
   const configService = app.get(ConfigService);
   app.connectMicroservice({
-    transport: Transport.RMQ,
+    transport: Transport.GRPC,
     options: {
-      urls: [configService.getOrThrow('RABBITMQ_URI')],
-      noAck: false, //this makes the message to be an error and get back to queue if consumer doesnt send some kind of confirmation
-      //its to manually handle errors. By default noAck is in true
-      queue: 'payments'
-    }
+      package: PAYMENTS_PACKAGE_NAME,
+      protoPath: join(__dirname, '../../../proto/payments.proto'),
+      url: configService.getOrThrow('PAYMENTS_GRPC_URL'),
+    },
   });
   app.useLogger(app.get(Logger));
   await app.startAllMicroservices();
